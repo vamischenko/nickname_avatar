@@ -7,10 +7,27 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
-class UserController extends Controller
+/**
+ * Контроллер пользователей.
+ *
+ * Обрабатывает регистрацию пользователя через API
+ * и отображение HTML-страницы со списком всех зарегистрированных.
+ */
+class UserController
 {
-    public function __construct(private readonly UserService $userService) {}
+    public function __construct(private readonly UserService $userService)
+    {
+    }
 
+    /**
+     * Регистрирует нового пользователя.
+     *
+     * Принимает nickname и avatar, проверяет уникальность nickname,
+     * сохраняет аватар на диск и данные пользователя в Redis.
+     *
+     * @param  RegisterUserRequest  $request  Валидированный запрос с nickname и avatar
+     * @return JsonResponse 201 при успехе, 422 если nickname уже занят
+     */
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $nickname = $request->input('nickname');
@@ -32,6 +49,13 @@ class UserController extends Controller
         ], 201);
     }
 
+    /**
+     * Отображает HTML-страницу со списком всех зарегистрированных пользователей.
+     *
+     * Пользователи передаются в шаблон отсортированными от новых к старым.
+     *
+     * @return View Шаблон users.index
+     */
     public function index(): View
     {
         $users = $this->userService->all();

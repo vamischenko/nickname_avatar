@@ -4,13 +4,29 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Запрос на регистрацию пользователя.
+ *
+ * Валидирует поля nickname и avatar перед передачей в контроллер.
+ *
+ * Правила для nickname: обязательное, строка, 2–50 символов, только буквы/цифры/_ /-
+ * Правила для avatar: обязательное, файл, MIME jpeg/jpg/png/gif/webp, максимум 2 МБ
+ */
 class RegisterUserRequest extends FormRequest
 {
+    /**
+     * Все запросы к этому эндпоинту разрешены без дополнительной авторизации.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Возвращает правила валидации полей запроса.
+     *
+     * @return array<string, array<int, string>> Карта поле => список правил
+     */
     public function rules(): array
     {
         return [
@@ -19,6 +35,11 @@ class RegisterUserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Возвращает кастомные сообщения об ошибках валидации.
+     *
+     * @return array<string, string> Карта правило.поле => сообщение
+     */
     public function messages(): array
     {
         return [
